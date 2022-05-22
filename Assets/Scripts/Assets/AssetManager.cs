@@ -8,7 +8,7 @@ using UnityEditor;
 using UnityEditor.Callbacks;
 using Unity.Burst;
 
-namespace Game.Assets
+namespace Molotkoff.AssetManagment
 {
     [CreateAssetMenu(menuName = "Game/Assets/Manager/Create")]
     public class AssetManager : ScriptableSingleton<AssetManager>

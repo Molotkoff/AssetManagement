@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 using UnityEditor;
 using UnityEngine;
 
-namespace Molotkoff.AssetManagment.Editor
+namespace Molotkoff.AssetManagment.Editor.Builders
 {
-    class AssetManagerPostProcessor : AssetPostprocessor
+    internal class AssetManagerPostProcessor : AssetPostprocessor
     {
         public static void OnPostprocessAllAssets(System.String[] importedAssets, System.String[] deletedAssets, System.String[] movedAssets, System.String[] movedFromAssetPaths)
         {
@@ -21,7 +21,7 @@ namespace Molotkoff.AssetManagment.Editor
                     var assetType = asset.GetType();
                     if (assetType.IsDefined(typeof(RequiredAssetAttribute), false)) //is reauired-asset
                     {
-                        AssetManagerEditor.ConfigureRequiredAsset(asset);
+                        AssetManagementBuilder.BuildRequiredAsset(asset);
                     }
                 }
             }

@@ -14,46 +14,25 @@ namespace Molotkoff.AssetManagment.Editor
     [CustomEditor(typeof(AssetManager))]
     public class AssetManagerEditor : UnityEditor.Editor
     {
-        private RequiredAssetField[] _assetFields;
+        private SerializedProperty _assetManagers;
         
         private void OnEnable()
         {
-            var allAssets = Util.FindAllWithAttribute(typeof(RequiredAssetAttribute))
-                                .Select(type => AssetUtil.FindAsset(type));
-            var assetFields = new List<RequiredAssetField>();
-
-            foreach (var asset in allAssets)
-            {
-                assetFields.Add(new RequiredAssetField()
-                {
-                    Name = asset.GetType().ToString().Replace("UnityEngine.",""),
-                    Object = asset
-                });
-            }
-
-            _assetFields = assetFields.ToArray();
+            this._assetManagers = serializedObject.FindProperty("_assetsManagers");
         }
 
         public override void OnInspectorGUI()
         {
-            for (int i = 0; i < _assetFields.Length; i++)
+            for (int i = 0; i < _assetManagers.arraySize; i++)
             {
-                var assetField = _assetFields[i];
-                EditorGUILayout.BeginHorizontal();
-                assetField.Object = (ScriptableObject)EditorGUILayout.ObjectField(assetField.Object, assetField.Object.GetType(), false);
-                EditorGUILayout.EndHorizontal();
+                var assetManagerProperty = _assetManagers.GetArrayElementAtIndex(i);
+                EditorGUILayout.PropertyField(assetManagerProperty);
             }
 
             if (GUILayout.Button("Rebuild"))
             {
                 AssetManagementBuilder.RebuildAssetManager();
             }
-        }
-
-        class RequiredAssetField
-        {
-            public string Name;
-            public ScriptableObject Object;
         }
     }
 }

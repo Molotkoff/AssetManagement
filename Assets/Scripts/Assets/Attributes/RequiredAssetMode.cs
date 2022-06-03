@@ -4,10 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Molotkoff.AssetManagment.Components
+namespace Molotkoff.AssetManagment
 {
-    public class ComponentAttribute : Attribute
+    public enum RequiredAssetMode
     {
-
+        None,
+        Single,
+        Many
     }
 }

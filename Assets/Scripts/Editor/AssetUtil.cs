@@ -25,7 +25,7 @@ namespace Molotkoff.AssetManagment
             return asset;
         }
 
-        public static ScriptableObject[] FindAssets(Type onType)
+        public static IEnumerable<ScriptableObject> FindAssets(Type onType)
         {
             var assets = new List<ScriptableObject>();
             var onFormat = onType.ToString().Replace("UnityEngine.", "");
@@ -40,7 +40,7 @@ namespace Molotkoff.AssetManagment
                     assets.Add(asset);
             }
 
-            return assets.ToArray();
+            return assets;
         }
 
         public static ScriptableObject[] FindAssets(Predicate<ScriptableObject> predicate)

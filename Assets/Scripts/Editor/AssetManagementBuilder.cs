@@ -63,7 +63,7 @@ namespace Molotkoff.AssetManagment.Editor.Builders
                 Undo.RecordObject(assetManagerObject, "Configured Asset-Manager");
 
             var assets = FindAssetManagers();
-            var cache = new Dictionary<Type, object>();
+            var cache = new Dictionary<Type, IEnumerable<object>>();
             foreach (var asset in assets)
                 ConfiguteAssetManager(asset, assets, cache);
 
@@ -81,25 +81,50 @@ namespace Molotkoff.AssetManagment.Editor.Builders
                   .ToArray();
         }
 
-        private static void ConfiguteAssetManager(BaseAssetManager assetManager, BaseAssetManager[] assetManagers, Dictionary<Type, object> cache)
+        private static void ConfiguteAssetManager(BaseAssetManager assetManager, BaseAssetManager[] assetManagers, Dictionary<Type, IEnumerable<object>> cache)
         {
             var fields = GetFields(assetManager, field => field.IsDefined(typeof(RequireAttribute), true));
+
             foreach (var field in fields)
             {
-                var requiredType = field.FieldType;
+                var fieldType = field.FieldType;
+                var requiredType = TypeUtil.GetTypeEvenFromCollection(fieldType);
+                var requiredAttribute = field.GetCustomAttribute<RequireAttribute>();
+                var requiredMode = requiredAttribute.Mode;
 
                 if (!cache.TryGetValue(requiredType, out var requiredAsset))
                 {
                     var foundAssets = AssetUtil.FindAssets(requiredType);
 
-                    if (foundAssets.Length != 1)
-                        Debug.LogError("Warning");
-
-                    requiredAsset = foundAssets[0];
+                    requiredAsset = foundAssets;
                     cache.Add(requiredType, requiredAsset);
                 }
+                
+                switch (requiredMode)
+                {
+                    case RequiredAssetMode.Single:
 
-                field.SetValue(assetManager, requiredAsset);
+                        if (requiredAsset.Count() != 1)
+                        {
+                            Debug.LogError("Can't resolve required-assets, needs only 1");
+                            return;
+                        }
+
+                        field.SetValue(assetManager, requiredAsset.First());
+                        break;
+                    case RequiredAssetMode.Many:
+
+                        if (requiredAsset.Count() == 0)
+                        {
+                            Debug.LogError("Can't resolve required-assets, needs 1");
+                            return;
+                        }
+
+                        var convertedAssets = TypeUtil.CollectionConverter(fieldType, requiredAsset);
+                        field.SetValue(assetManager, convertedAssets);
+
+                        break;
+                }
             }
         }
 

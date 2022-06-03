@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Molotkoff.AssetManagment.Components;
 
 namespace Molotkoff.AssetManagment.Editor
 {
     class ScriptBuilder
     {
+        /*
         [UnityEditor.Callbacks.DidReloadScripts]
         public static void BuildScripts()
         {
@@ -21,6 +21,6 @@ namespace Molotkoff.AssetManagment.Editor
                                                      return false;
                                                  }));
 
-        }
+        }*/
     }
 }

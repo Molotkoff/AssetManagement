@@ -21,5 +21,7 @@ namespace Molotkoff.AssetManagment.Editor
                             .SelectMany(assembly => assembly.GetTypes())
                             .Where(type => type.IsDefined(attribute, false) && !type.IsAbstract);
         }
+
+
     }
 }

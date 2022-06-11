@@ -19,7 +19,7 @@ namespace Molotkoff.AssetManagment.Editor.Builders
                 if (asset != null)
                 {
                     var assetType = asset.GetType();
-                    if (assetType.IsDefined(typeof(RequiredAssetAttribute), false)) //is reauired-asset
+                    if (assetType.IsDefined(typeof(AssetAttribute), false)) //is required-asset
                     {
                         AssetManagementBuilder.BuildRequiredAsset(asset);
                     }

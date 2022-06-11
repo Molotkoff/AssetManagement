@@ -6,8 +6,10 @@ using System.Threading.Tasks;
 
 namespace Molotkoff.AssetManagment.Editor
 {
-    class ScriptBuilder
+    internal sealed class ScriptBuilder
     {
+        internal static event Action OnRebuild;
+
         /*
         [UnityEditor.Callbacks.DidReloadScripts]
         public static void BuildScripts()

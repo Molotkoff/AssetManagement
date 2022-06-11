@@ -3,11 +3,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Reflection;
 
 namespace Molotkoff.AssetManagment.Editor
 {
     public static class TypeUtil
     {
+        public static bool AttributeOnClass<A>(object obj, out A attribute) where A : Attribute
+        {
+            var type = obj.GetType();
+            attribute = type.GetCustomAttribute<A>(true);
+
+            return attribute != null;
+        }
+
         public static bool IsCollection(Type type)
         {
             if (type.IsArray)
@@ -65,6 +74,23 @@ namespace Molotkoff.AssetManagment.Editor
             }
 
             return collection;
+        }
+
+        public static T GetFieldValueFromObject<T>(object obj, string fieldName)
+        {
+            var field = obj.GetType().GetField(fieldName, BindingFlags.NonPublic | 
+                                                          BindingFlags.Instance);
+
+            if (field == null)
+                throw new MissingFieldException($"No field in object");
+
+            var inspectedType = typeof(T);
+            var fieldType = field.FieldType;
+
+            if (inspectedType != fieldType)
+                throw new MissingFieldException($"No field in object");
+
+            return (T)field.GetValue(obj);
         }
     }
 }

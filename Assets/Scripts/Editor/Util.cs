@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEditor;
 
 namespace Molotkoff.AssetManagment.Editor
 {
@@ -21,7 +22,5 @@ namespace Molotkoff.AssetManagment.Editor
                             .SelectMany(assembly => assembly.GetTypes())
                             .Where(type => type.IsDefined(attribute, false) && !type.IsAbstract);
         }
-
-
     }
 }

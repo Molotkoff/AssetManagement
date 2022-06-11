@@ -4,14 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
+using Molotkoff.AssetManagment;
 
 namespace Molotkoff.Test
 {
-    public class Mono : MonoBehaviour
+    [Asset("MyAssets/BBB")]
+    [CreateAssetMenu(menuName = "Game/CreateTest/BBB")]
+    public class BBBRequired : ScriptableObject
     {
-        public void Awake()
-        {
-            AssetManagment.Manager.instance.Create<int, int>(5);
-        }
     }
 }

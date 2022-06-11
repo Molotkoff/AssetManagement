@@ -20,7 +20,7 @@ namespace Molotkoff.AssetManagment.Editor.Builders
 
         public static bool BuildRequiredAsset(ScriptableObject requiredAsset)
         {
-            var assetManagerObject = AssetManager.instance;
+            var assetManagerObject = Manager.instance;
 
             if (assetManagerObject != null)
             {
@@ -35,7 +35,7 @@ namespace Molotkoff.AssetManagment.Editor.Builders
                     var bindings = BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public;
                     var assetManagerRequiredFields = assetManagerType.GetMembers(bindings)
                                                     .Where(member => member.MemberType == MemberTypes.Field)
-                                                    .Where(member => member.IsDefined(typeof(RequireAttribute), false))
+                                                    .Where(member => member.IsDefined(typeof(DependencyAttribute), false))
                                                     .Select(member => (FieldInfo)member);
 
                     foreach (var assetManagerRequiredField in assetManagerRequiredFields)
@@ -53,9 +53,9 @@ namespace Molotkoff.AssetManagment.Editor.Builders
             return false;
         }
 
-        private static BaseAssetManager[] ReconfigureAssetManager(SerializedObject serializedObject)
+        private static BaseManager[] ReconfigureAssetManager(SerializedObject serializedObject)
         {
-            var assetManagerObject = AssetManager.instance;
+            var assetManagerObject = Manager.instance;
             var assetManagerObjectType = assetManagerObject.GetType();
             var assetManagerObjectField = assetManagerObjectType.GetField("_assetsManagers", BindingFlags.Instance | BindingFlags.NonPublic);
 
@@ -72,24 +72,24 @@ namespace Molotkoff.AssetManagment.Editor.Builders
             return assets;
         }
 
-        private static BaseAssetManager[] FindAssetManagers()
+        private static BaseManager[] FindAssetManagers()
         {
             return AppDomain.CurrentDomain.GetAssemblies()
                   .SelectMany(assembly => assembly.GetTypes())
-                  .Where(type => type.IsSubclassOf(typeof(BaseAssetManager)) && !type.IsAbstract)
-                  .Select(type => Activator.CreateInstance(type) as BaseAssetManager)
+                  .Where(type => type.IsSubclassOf(typeof(BaseManager)) && !type.IsAbstract)
+                  .Select(type => Activator.CreateInstance(type) as BaseManager)
                   .ToArray();
         }
 
-        private static void ConfiguteAssetManager(BaseAssetManager assetManager, BaseAssetManager[] assetManagers, Dictionary<Type, IEnumerable<object>> cache)
+        private static void ConfiguteAssetManager(BaseManager assetManager, BaseManager[] assetManagers, Dictionary<Type, IEnumerable<object>> cache)
         {
-            var fields = GetFields(assetManager, field => field.IsDefined(typeof(RequireAttribute), true));
+            var fields = GetFields(assetManager, field => field.IsDefined(typeof(DependencyAttribute), true));
 
             foreach (var field in fields)
             {
                 var fieldType = field.FieldType;
                 var requiredType = TypeUtil.GetTypeEvenFromCollection(fieldType);
-                var requiredAttribute = field.GetCustomAttribute<RequireAttribute>();
+                var requiredAttribute = field.GetCustomAttribute<DependencyAttribute>();
                 var requiredMode = requiredAttribute.Mode;
 
                 if (!cache.TryGetValue(requiredType, out var requiredAsset))

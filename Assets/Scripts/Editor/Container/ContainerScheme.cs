@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Molotkoff.AssetManagment
+namespace Molotkoff.AssetManagment.Editor.Schemes
 {
-    public class RequiredAssetAttribute : Attribute
+    internal class ContainerScheme
     {
-
     }
 }

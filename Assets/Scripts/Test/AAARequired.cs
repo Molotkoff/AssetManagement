@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace Molotkoff.Test
 {
-    [RequiredAsset]
+    [Asset("MyAssets")]
     [CreateAssetMenu(menuName = "Game/CreateTest/AAA")]
     public class AAARequired : ScriptableObject
     {

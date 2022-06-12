@@ -37,10 +37,21 @@ namespace Molotkoff.AssetManagment.Editor
                 for (int i = 0; i < assets.Length; i++)
                 {
                     var asset = assets[i];
-                    var assetEditor = CreateEditor(asset);
-                    assetEditor.OnInspectorGUI();
-                    //EditorGUILayout.
-                    //EditorGUILayout.LabelField(asset.GetType().Name);
+                    var serializedAsset = new SerializedObject(asset);
+
+                    EditorGUILayout.LabelField(asset.name);
+
+                    var propertyIterator = serializedAsset.GetIterator();
+                    while(propertyIterator.NextVisible(true))
+                    {
+                        if (propertyIterator.name != "m_Script")
+                        {
+                            EditorGUILayout.PropertyField(propertyIterator);
+
+                            if (serializedAsset.hasModifiedProperties)
+                                serializedAsset.ApplyModifiedProperties();
+                        }
+                    }
                 }
 
                 var inners = group.Inner;

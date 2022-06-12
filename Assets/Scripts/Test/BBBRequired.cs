@@ -12,5 +12,6 @@ namespace Molotkoff.Test
     [CreateAssetMenu(menuName = "Game/CreateTest/BBB")]
     public class BBBRequired : ScriptableObject
     {
+        [SerializeField] private int iHaveInt;
     }
 }

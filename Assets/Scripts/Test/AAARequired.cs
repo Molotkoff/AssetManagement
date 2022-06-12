@@ -12,6 +12,6 @@ namespace Molotkoff.Test
     [CreateAssetMenu(menuName = "Game/CreateTest/AAA")]
     public class AAARequired : ScriptableObject
     {
-
+        public int ihaveInt;
     }
 }

@@ -3,15 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using UnityEngine;
+using Molotkoff.AssetManagment;
 
 namespace Molotkoff.Test
 {
-    public class Mono : MonoBehaviour
+    public class TestProvider : IContainerProvider<int>
     {
-        public void Awake()
+        public int Provide()
         {
-            AssetManagment.AssetManagment.instance.Create<int, int>(5);
+            return 0;
         }
     }
 }

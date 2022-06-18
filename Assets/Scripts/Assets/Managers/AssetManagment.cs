@@ -11,8 +11,9 @@ using Unity.Burst;
 namespace Molotkoff.AssetManagment
 {
     [CreateAssetMenu(menuName = "Molotkoff/AssetManagment/Manager")]
-    public class Manager : ScriptableSingleton<Manager>
+    public class AssetManagment : ScriptableSingleton<AssetManagment>
     {
+        [SerializeField] internal ContainersScheme _containerScheme;
         [SerializeField] private BaseManager[] _assetsManagers;
         [SerializeField] private ScriptableObject[] _assets;
 
@@ -45,10 +46,11 @@ namespace Molotkoff.AssetManagment
             return assetManager.Create(settings);
         }
 
+        /*
 #if UNITY_EDITOR
         public static bool Save()
         {
-            var instance = Manager.instance;
+            var instance = AssetManagment.instance;
 
             if (instance != null)
             {
@@ -59,13 +61,7 @@ namespace Molotkoff.AssetManagment
             return false;
         }
 #endif
-
-        [MenuItem("Game/Test")]
-        public static void Test()
-        {
-
-        }
-
+        */
     }
 
 

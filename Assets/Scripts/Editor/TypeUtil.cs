@@ -92,5 +92,22 @@ namespace Molotkoff.AssetManagment.Editor
 
             return (T)field.GetValue(obj);
         }
+
+        public static void SetFieldValueFromObject<T>(object obj, string fieldName, T _value)
+        {
+            var field = obj.GetType().GetField(fieldName, BindingFlags.NonPublic |
+                                                          BindingFlags.Instance);
+
+            if (field == null)
+                throw new MissingFieldException($"No field in object");
+
+            var inspectedType = typeof(T);
+            var fieldType = field.FieldType;
+
+            if (inspectedType != fieldType)
+                throw new MissingFieldException($"No field in object");
+
+            field.SetValue(obj, _value);
+        }
     }
 }

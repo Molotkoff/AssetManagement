@@ -12,3 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5c63d402040e5094da6cb224073f8416, type: 3}
   m_Name: New AAA Required
   m_EditorClassIdentifier: 
+  ihaveInt: 5

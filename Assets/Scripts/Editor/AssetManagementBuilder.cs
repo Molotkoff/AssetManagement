@@ -20,7 +20,7 @@ namespace Molotkoff.AssetManagment.Editor.Builders
 
         public static bool BuildRequiredAsset(ScriptableObject requiredAsset)
         {
-            var assetManagerObject = Manager.instance;
+            var assetManagerObject = AssetManagment.instance;
 
             if (assetManagerObject != null)
             {
@@ -55,7 +55,7 @@ namespace Molotkoff.AssetManagment.Editor.Builders
 
         private static BaseManager[] ReconfigureAssetManager(SerializedObject serializedObject)
         {
-            var assetManagerObject = Manager.instance;
+            var assetManagerObject = AssetManagment.instance;
             var assetManagerObjectType = assetManagerObject.GetType();
             var assetManagerObjectField = assetManagerObjectType.GetField("_assetsManagers", BindingFlags.Instance | BindingFlags.NonPublic);
 

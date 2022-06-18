@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 
 namespace Molotkoff.AssetManagment
 {
-    public class Container<T> : BaseContainer, IDisposable
+    internal class ContainerHandler
     {
-        public T Value;
+        public BaseContainer Container { get; private set; }
 
-        public Container(T _value)
+        public ContainerHandler(BaseContainer container)
         {
-            this.Value = _value;
+            Container = container;
         }
     }
 }

@@ -5,23 +5,33 @@ using UnityEditor;
 using System.Text;
 using Molotkoff.AssetManagment;
 using Molotkoff.AssetManagment.Editor.Builders;
+using System.Linq;
 
 namespace Molotkoff.AssetManagment.Editor
 {
-    [CustomEditor(typeof(Manager))]
+    [CustomEditor(typeof(AssetManagment))]
     public class AssetManagerEditor : UnityEditor.Editor
     {
+        private ContainersScheme[] _schemes;
+        private string[] _schemesNames;
+        private int _selectedScheme;
+
         private BaseManager[] _assetsManagers;
         private AssetGroup<ScriptableObject> _groups;
 
         private void OnEnable()
         {
+            _schemes = AssetUtil.FindAssets(typeof(ContainersScheme)).Select(asset => (ContainersScheme)asset).ToArray();
+            _schemesNames = _schemes.Select(scheme => scheme.name).ToArray();
+            _selectedScheme = 0;
+
             _assetsManagers = TypeUtil.GetFieldValueFromObject<BaseManager[]>(target, "_assetsManagers");
             _groups = BuildAssetsGroups(AssetUtil.FindAssets(asset => asset.GetType().IsDefined(typeof(AssetAttribute), true)));
         }
 
         public override void OnInspectorGUI()
         {
+            DisplaySchemesPopup();
             DisplayAssets(_groups);
             DisplayRebuild();
         }
@@ -128,6 +138,19 @@ namespace Molotkoff.AssetManagment.Editor
             }
 
             return rootGroup;
+        }
+
+        private void DisplaySchemesPopup()
+        {
+            var newSelected = EditorGUILayout.Popup(_selectedScheme, _schemesNames);
+
+            if (newSelected != _selectedScheme)
+            {
+                _selectedScheme = newSelected;
+                var scheme = _schemes[_selectedScheme];
+
+                TypeUtil.SetFieldValueFromObject(target, "_containerScheme", scheme);
+            }
         }
 
         class AssetGroup<T>

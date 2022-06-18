@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
-using Molotkoff.AssetManagment.Containers.Events;
+using Molotkoff.AssetManagment;
 
 namespace Molotkoff.Test
 {
-    public class AAAManager : AssetManagment.FactoryManager<int, int>, IEventListener
+    public class AAAManager : AssetManagment.FactoryManager<int, int>
     {
         [Molotkoff.AssetManagment.Dependency(AssetManagment.RequiredAssetMode.Many)] private AAARequired[] required;
 
@@ -16,11 +16,6 @@ namespace Molotkoff.Test
         {
             Debug.Log("I have :" + required.Length);
             return 0;
-        }
-
-        public void OnEventListen(EventContainer container)
-        {
-            container.AddListener<Mono>(m => { });
         }
     }
 }

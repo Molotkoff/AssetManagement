@@ -10,12 +10,13 @@ namespace Molotkoff.Test
 {
     public class TestContainerRequirer : MonoBehaviour
     {
+        [SerializeField]
         private Container<int> _containerWithInt;
 
         private void Awake()
         {
-            _containerWithInt = this.GetContainer<int>("test");
-            Debug.Log(_containerWithInt.Value);
+            //_containerWithInt = gameObject.GetContainer<int>(gameObject, "test");
+            //Debug.Log(_containerWithInt.Value);
         }
     }
 }

@@ -20,24 +20,28 @@ namespace Molotkoff.AssetManagment
             {
                 if (_instance == null)
                 {
-                    _instance = new Containers();
-                    _instance._scheme = AssetManagment.instance._containerScheme;
+                    _instance = new Containers() 
+                    {
+                        _scheme = AssetManagment.instance._containerScheme
+                    };
                 }
 
                 return _instance;
             }
         }
 
-        internal static Container<T> GetContainer<T>(ContainerSettings settings, GameObject obj, int local_id)
+        internal static Container<T> GetContainer<T>(ContainerSettings settings, int local_id)
         {
             var inst = Instance;
 
-            if (!inst._handlers.TryGetValue(obj, out var handler))
+            if (!inst._handlers.TryGetValue(settings.Root, out var handler))
             {
-                var tValue = inst._scheme.Provide<T>(settings);
-                var container = new Container<T>(tValue);
-                handler = new ContainerHandler(container);
+                handler = new ContainerHandler();
+                inst._handlers.Add(settings.Root, handler);
             }
+
+            var tValue = inst._scheme.Provide<T>(settings);
+            var container = new Container<T>(tValue);
 
             return (Container<T>)handler.Container;
         }

@@ -18,7 +18,11 @@ namespace Molotkoff.AssetManagment
         [SerializeField] private ScriptableObject[] _assets;
 
         private Dictionary<Type, BaseManager> _assetsManagersCache;
-        
+
+#if !UNITY_ENGINE
+        private List<string> _containers = new List<string>();
+#endif
+
         public R Create<S, R>(S settings)
         {
             var type = typeof(S);

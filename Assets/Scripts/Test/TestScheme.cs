@@ -13,9 +13,10 @@ namespace Molotkoff.Test
     {
         protected override ContainerSchemeBuilder Scheme()
         {
-            return new ContainerSchemeBuilder()
-                      .AddProvider(new ContainerSettings() { ID = "test", Type = typeof(TestContainerRequirer) },
-                                   new TestProvider());
+            var container = new ContainerSchemeBuilder();
+            container.AddProvider("test", new TestProvider());
+
+            return container;
         }
     }
 }

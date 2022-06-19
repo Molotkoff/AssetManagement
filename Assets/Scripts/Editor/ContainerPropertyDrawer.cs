@@ -1,0 +1,48 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using UnityEngine;
+using UnityEditor;
+
+namespace Molotkoff.AssetManagment.Editor
+{
+    [CustomPropertyDrawer(typeof(Container<>), true)]
+    public class ContainerPropertyDrawer : PropertyDrawer
+    {
+        public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
+        {
+            position = DrawContainer(position, property);
+        }
+
+        private Rect DrawContainer(Rect position, SerializedProperty property)
+        {
+            const float CONTAINER_NAME_WIDTH = 70;
+            const float HEIGHT = 15;
+
+            var containerNameRect = new Rect(position.position, new Vector2(CONTAINER_NAME_WIDTH, HEIGHT));
+            EditorGUI.LabelField(containerNameRect, "Container");
+
+            //popup container choose
+            var allContainers = TypeUtil.GetFieldValueFromObject<List<string>>(AssetManagment.instance, "_containers").ToArray();
+
+            var containerNameProperty = property.FindPropertyRelative("_containerName");
+            var myContainer = containerNameProperty.stringValue;
+            var myContainerIndex = Array.IndexOf(allContainers, myContainer);
+
+            var containerPopupPosition = new Rect(position.position + new Vector2(CONTAINER_NAME_WIDTH + 10, 0), 
+                                                  new Vector2(CONTAINER_NAME_WIDTH * 2, HEIGHT));
+            
+            var newIndex = EditorGUI.Popup(containerPopupPosition, myContainerIndex, allContainers);
+
+            if (newIndex != myContainerIndex)
+            {
+                containerNameProperty.stringValue = allContainers[newIndex];
+                //property.serializedObject.ApplyModifiedProperties();
+            }
+
+            return new Rect(position.position + new Vector2(0, HEIGHT), position.size);
+        }
+    }
+}

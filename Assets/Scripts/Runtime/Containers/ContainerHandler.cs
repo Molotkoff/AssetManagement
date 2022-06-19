@@ -8,11 +8,8 @@ namespace Molotkoff.AssetManagment
 {
     internal class ContainerHandler
     {
-        public BaseContainer Container { get; private set; }
+        private Dictionary<Type, BaseContainer> _containers = new Dictionary<Type, BaseContainer>();
 
-        public ContainerHandler(BaseContainer container)
-        {
-            Container = container;
-        }
+        public BaseContainer Container;
     }
 }

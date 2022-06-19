@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 481a0b605c36d084eac29d7e6fb46ff3, type: 3}
   m_Name: my
   m_EditorClassIdentifier: 
-  iHaveInt: 54
+  iHaveInt: 49

@@ -6,11 +6,14 @@ using System.Threading.Tasks;
 
 namespace Molotkoff.AssetManagment
 {
-    public class BaseContainer : IDisposable
+    [Serializable]
+    public class Container<T> : BaseContainer, IDisposable
     {
-        public void Dispose()
+        public T Value;
+
+        public Container(T _value)
         {
-            Containers.FreeContainer(this);
+            this.Value = _value;
         }
     }
 }

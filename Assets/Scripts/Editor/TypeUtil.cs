@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Reflection;
+using UnityEditor;
+using UnityEngine;
 
 namespace Molotkoff.AssetManagment.Editor
 {
@@ -79,16 +81,29 @@ namespace Molotkoff.AssetManagment.Editor
         public static T GetFieldValueFromObject<T>(object obj, string fieldName)
         {
             var field = obj.GetType().GetField(fieldName, BindingFlags.NonPublic | 
+                                                          BindingFlags.Public    |
                                                           BindingFlags.Instance);
 
             if (field == null)
-                throw new MissingFieldException($"No field in object");
+                throw new MissingFieldException($"No field in {obj} with name {fieldName}");
 
-            var inspectedType = typeof(T);
-            var fieldType = field.FieldType;
+            //var inspectedType = typeof(T);
+            //var fieldType = field.FieldType;
 
-            if (inspectedType != fieldType)
-                throw new MissingFieldException($"No field in object");
+            return (T)field.GetValue(obj);
+        }
+
+        public static T GetFieldValueFromObjectPreCast<T, C>(object obj, string fieldName)
+        {
+            var field = typeof(C).GetField(fieldName, BindingFlags.NonPublic |
+                                                      BindingFlags.Public    |
+                                                      BindingFlags.Instance);
+
+            if (field == null)
+                throw new MissingFieldException($"No field in {obj} with name {fieldName} on type {typeof(C)}");
+
+            //var inspectedType = typeof(T);
+            //var fieldType = field.FieldType;
 
             return (T)field.GetValue(obj);
         }
@@ -108,6 +123,16 @@ namespace Molotkoff.AssetManagment.Editor
                 throw new MissingFieldException($"No field in object");
 
             field.SetValue(obj, _value);
+        }
+
+        public static void SetFieldValueInSerializibleProperty<T>(SerializedProperty property, string fieldName, T _value)
+        {
+            SetFieldValueFromObject(property.objectReferenceValue, fieldName, _value);
+        }
+
+        public static T GetFieldValueInSerializibleProperty<T>(SerializedProperty property, string fieldName)
+        {
+            return GetFieldValueFromObject<T>(property.objectReferenceValue, fieldName);
         }
     }
 }

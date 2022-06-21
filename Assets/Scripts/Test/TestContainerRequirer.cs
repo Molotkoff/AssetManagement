@@ -12,6 +12,8 @@ namespace Molotkoff.Test
     {
         [SerializeField]
         private Container<int> _containerWithInt;
+        [SerializeField]
+        private Container<int> _containerWith2Int;
 
         private void Awake()
         {

@@ -12,7 +12,9 @@ namespace Molotkoff.AssetManagment
         private static Containers _instance;
 
         private ContainersScheme _scheme;
-        private Dictionary<GameObject, ContainerHandler> _handlers = new Dictionary<GameObject, ContainerHandler>();
+
+        private Dictionary<string, Dictionary<Type, object>> _consistent;
+        private Dictionary<string, Dictionary<object, Dictionary<Type, object>>> _self;
 
         private static Containers Instance
         {
@@ -20,9 +22,11 @@ namespace Molotkoff.AssetManagment
             {
                 if (_instance == null)
                 {
-                    _instance = new Containers() 
+                    _instance = new Containers()
                     {
-                        _scheme = AssetManagment.instance._containerScheme
+                        _scheme = AssetManagment.instance._containerScheme,
+                        _consistent = new Dictionary<string, Dictionary<Type, object>>(),
+                        _self = new Dictionary<string, Dictionary<object, Dictionary<Type, object>>>()
                     };
                 }
 
@@ -30,25 +34,79 @@ namespace Molotkoff.AssetManagment
             }
         }
 
-        internal static Container<T> GetContainer<T>(ContainerSettings settings, int local_id)
+        internal static T Get<T>(string id, object self)
         {
-            var inst = Instance;
-
-            if (!inst._handlers.TryGetValue(settings.Root, out var handler))
-            {
-                handler = new ContainerHandler();
-                inst._handlers.Add(settings.Root, handler);
-            }
-
-            var tValue = inst._scheme.Provide<T>(settings);
-            var container = new Container<T>(tValue);
-
-            return (Container<T>)handler.Container;
+            return (T)Get<T>(id, self, typeof(T), Instance);
         }
 
-        internal static void FreeContainer(BaseContainer container)
+        private static object Get<T>(string id, object self, Type type, Containers containers)
         {
+            if (!containers._scheme.TryGetSettings(id, type, out var settings))
+                throw new Exception("Not found scheme for container");
 
+            switch (settings.Scope)
+            {
+                case ContainerScope.Consistent:
+                    if (!containers._consistent.TryGetValue(id, out var consistentHandler))
+                    {
+                        consistentHandler = new Dictionary<Type, object>();
+                        containers._consistent.Add(id, consistentHandler);
+                    }
+
+                    if (!consistentHandler.TryGetValue(type, out var consistentValue))
+                    {
+                        var containerName = settings.id;
+                        if (containerName == id)
+                        {
+                            var provider = (IContainerProvider<T>)settings.Provider;
+                            var provided = provider.Provide();
+                            consistentHandler.Add(type, provided);
+
+                            return provided;
+                        }
+
+                        var _provided = Get<T>(containerName, self, type, containers);
+                        consistentHandler.Add(type, _provided);
+
+                        return _provided;
+                    }
+
+                    return consistentValue;
+                case ContainerScope.Self:
+                    if (!containers._self.TryGetValue(id, out var selfHandler))
+                    {
+                        selfHandler = new Dictionary<object, Dictionary<Type, object>>();
+                        containers._self.Add(id, selfHandler);
+                    }
+
+                    if (!selfHandler.TryGetValue(self, out var selfContainer))
+                    {
+                        selfContainer = new Dictionary<Type, object>();
+                        selfHandler.Add(self, selfContainer);
+                    }
+
+                    if (!selfContainer.TryGetValue(type, out var selfValue))
+                    {
+                        var containerName = settings.id;
+                        if (containerName == id)
+                        {
+                            var provider = (IContainerProvider<T>)settings.Provider;
+                            var provided = provider.Provide();
+                            selfContainer.Add(type, provided);
+
+                            return provided;
+                        }
+
+                        var _provided = Get<T>(containerName, self, type, containers);
+                        selfContainer.Add(type, _provided);
+
+                        return _provided;
+                    }
+
+                    return selfValue;
+            }
+
+            return null;
         }
     }
 }

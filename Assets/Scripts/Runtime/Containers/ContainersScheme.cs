@@ -9,39 +9,58 @@ namespace Molotkoff.AssetManagment
 {
     public abstract class ContainersScheme : ScriptableObject
     {
-        private Dictionary<int, object> _providers;
-        private bool _hasBuilded;
+        internal Dictionary<string, Dictionary<Type, ContainerSettings>> _settings =
+            new Dictionary<string, Dictionary<Type, ContainerSettings>>();
 
-        protected abstract ContainerSchemeBuilder Scheme();
-
-        internal T Provide<T>(ContainerSettings settings)
+        internal bool TryGetSettings(string id, Type type, out ContainerSettings settings)
         {
-            if (!_hasBuilded)
-                Build();
+            if (!_settings.TryGetValue(id, out var settings0))
+            {
+                settings = null;
+                return false;
+            }
 
-            var hash = settings.GetHashCode();
-
-            if (!_providers.TryGetValue(hash, out var provider))
-                throw new Exception("No Provided");
-
-            var tProvider = (IContainerProvider<T>)provider;
-
-            return tProvider.Provide();
+            return settings0.TryGetValue(type, out settings);
         }
 
-        private void Build()
+        protected ContainersScheme AddContainer<T>(string id, ContainerScope scope, IContainerProvider<T> provider)
         {
-            _hasBuilded = true;
-
-            _providers = new Dictionary<int, object>();
-
-            var schemes = Scheme().Schemes;
-
-            for (int i = 0; i < schemes.Count; i++)
+            var settings = new ContainerSettings()
             {
-                var scheme = schemes[i];
-                _providers.Add(scheme.Item1.GetHashCode(), scheme.Item2);
+                id = id,
+                Scope = scope,
+                Provider = provider
+            };
+            
+            if (!_settings.TryGetValue(id, out var _contanerSettings))
+            {
+                _contanerSettings = new Dictionary<Type, ContainerSettings>();
+                _settings.Add(id, _contanerSettings);
             }
+
+            _contanerSettings.Add(typeof(T), settings);
+            
+            return this;
+        }
+
+        protected ContainersScheme AddContainer<T>(string id, ContainerScope scope, Func<T> provider)
+        {
+            var settings = new ContainerSettings()
+            {
+                id = id,
+                Scope = scope,
+                Provider = new AnonymousContainerProvider<T>(provider)
+            };
+
+            if (!_settings.TryGetValue(id, out var _contanerSettings))
+            {
+                _contanerSettings = new Dictionary<Type, ContainerSettings>();
+                _settings.Add(id, _contanerSettings);
+            }
+
+            _contanerSettings.Add(typeof(T), settings);
+
+            return this;
         }
     }
 }

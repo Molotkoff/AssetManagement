@@ -11,12 +11,13 @@ namespace Molotkoff.Test
     [CreateAssetMenu(menuName = "Test/Scheme")]
     public class TestScheme : ContainersScheme
     {
+        /*
         protected override ContainerSchemeBuilder Scheme()
         {
             var container = new ContainerSchemeBuilder();
             container.AddProvider("test", new TestProvider());
 
             return container;
-        }
+        }*/
     }
 }

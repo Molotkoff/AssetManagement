@@ -7,13 +7,23 @@ using System.Threading.Tasks;
 namespace Molotkoff.AssetManagment
 {
     [Serializable]
-    public class Container<T> : BaseContainer, IDisposable
+    public class Container<T> : BaseContainer
     {
-        public T Value;
+        private T _value;
+        private bool _needInit;
 
-        public Container(T _value)
+        public T Value
         {
-            this.Value = _value;
+            get
+            {
+                if (_needInit)
+                {
+                    _value = Containers.Get<T>(_id, _self);
+                    _needInit = false;
+                }
+
+                return _value;
+            }
         }
     }
 }

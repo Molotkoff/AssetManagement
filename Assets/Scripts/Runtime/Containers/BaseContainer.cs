@@ -8,13 +8,9 @@ using UnityEngine;
 namespace Molotkoff.AssetManagment
 {
     [Serializable]
-    public class BaseContainer : IDisposable
+    public class BaseContainer
     {
-        [SerializeField] private string _containerName;
-        
-        public void Dispose()
-        {
-            Containers.FreeContainer(this);
-        }
+        [SerializeField] protected internal string _id;
+        [SerializeField] protected internal object _self;
     }
 }

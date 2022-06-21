@@ -17,22 +17,23 @@ namespace Molotkoff.AssetManagment.Editor
         }
 
         private Rect DrawContainer(Rect position, SerializedProperty property)
-        {
-            const float CONTAINER_NAME_WIDTH = 70;
+        { //TO-DO: NICE DISPSLAY OF PROPERTY
+            const float CONTAINER_NAME_WIDTH = 200;
             const float HEIGHT = 15;
+            
+            var containerNameProperty = property.FindPropertyRelative("_id");
 
             var containerNameRect = new Rect(position.position, new Vector2(CONTAINER_NAME_WIDTH, HEIGHT));
-            EditorGUI.LabelField(containerNameRect, "Container");
+            EditorGUI.LabelField(containerNameRect, property.displayName);
 
             //popup container choose
             var allContainers = TypeUtil.GetFieldValueFromObject<List<string>>(AssetManagment.instance, "_containers").ToArray();
 
-            var containerNameProperty = property.FindPropertyRelative("_containerName");
             var myContainer = containerNameProperty.stringValue;
             var myContainerIndex = Array.IndexOf(allContainers, myContainer);
 
             var containerPopupPosition = new Rect(position.position + new Vector2(CONTAINER_NAME_WIDTH + 10, 0), 
-                                                  new Vector2(CONTAINER_NAME_WIDTH * 2, HEIGHT));
+                                                  new Vector2(CONTAINER_NAME_WIDTH, HEIGHT));
             
             var newIndex = EditorGUI.Popup(containerPopupPosition, myContainerIndex, allContainers);
 

@@ -10,7 +10,7 @@ namespace Molotkoff.AssetManagment.Editor
 {
     public class ContainerEditorWindow : EditorWindow
     {
-        [MenuItem("Window/My Window")]
+        [MenuItem("Molotkoff/AssetManagment/Containers")]
         public static void ShowWindow()
         {
             var window = GetWindow<ContainerEditorWindow>();
@@ -20,6 +20,11 @@ namespace Molotkoff.AssetManagment.Editor
         private void OnEnable()
         {
             
+        }
+
+        private void OnGUI()
+        {
+            //window
         }
     }
 }

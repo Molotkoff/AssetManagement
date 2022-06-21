@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Molotkoff.AssetManagment.Editor
+namespace Molotkoff.AssetManagment
 {
-    public class ContainerEditor
+    public interface IContainerPrepareProvider<S>
     {
-
+        void Prepare(S settings);
     }
 }

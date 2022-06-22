@@ -7,10 +7,14 @@ using UnityEngine;
 
 namespace Molotkoff.AssetManagment
 {
-    public abstract class ContainersScheme : ScriptableObject
+    [Serializable]
+    public class ContainersScheme
     {
         internal Dictionary<string, Dictionary<Type, ContainerSettings>> _settings =
             new Dictionary<string, Dictionary<Type, ContainerSettings>>();
+
+        private Dictionary<Type, List<string>> _containers = 
+            new Dictionary<Type, List<string>>();
 
         internal bool TryGetSettings(string id, Type type, out ContainerSettings settings)
         {
@@ -23,8 +27,19 @@ namespace Molotkoff.AssetManagment
             return settings0.TryGetValue(type, out settings);
         }
 
-        protected ContainersScheme AddContainer<T>(string id, ContainerScope scope, IContainerProvider<T> provider)
+        public string[] GetContainers(Type type)
         {
+            if (_containers.TryGetValue(type, out var containers))
+                return containers.ToArray();
+
+            return new string[1] { "None" };
+        }
+
+        public string AddContainer<T>(string name, ContainerScope scope, IContainerProvider<T> provider)
+        {
+            var id = new Guid().ToString();
+            var containerType = typeof(T);
+
             var settings = new ContainerSettings()
             {
                 id = id,
@@ -38,13 +53,24 @@ namespace Molotkoff.AssetManagment
                 _settings.Add(id, _contanerSettings);
             }
 
-            _contanerSettings.Add(typeof(T), settings);
-            
-            return this;
+            _contanerSettings.Add(containerType, settings);
+
+            if (!_containers.TryGetValue(containerType, out var containers))
+            {
+                containers = new List<string>();
+                _containers.Add(containerType, containers);
+            }
+
+            containers.Add(name);
+
+            return id;
         }
 
-        protected ContainersScheme AddContainer<T>(string id, ContainerScope scope, Func<T> provider)
+        public string AddContainer<T>(string name, ContainerScope scope, Func<T> provider)
         {
+            var id = new Guid().ToString();
+            var containerType = typeof(T);
+
             var settings = new ContainerSettings()
             {
                 id = id,
@@ -58,9 +84,17 @@ namespace Molotkoff.AssetManagment
                 _settings.Add(id, _contanerSettings);
             }
 
-            _contanerSettings.Add(typeof(T), settings);
+            _contanerSettings.Add(containerType, settings);
 
-            return this;
+            if (!_containers.TryGetValue(containerType, out var containers))
+            {
+                containers = new List<string>();
+                _containers.Add(containerType, containers);
+            }
+
+            containers.Add(name);
+
+            return id;
         }
     }
 }

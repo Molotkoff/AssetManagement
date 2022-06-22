@@ -7,7 +7,7 @@ using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 
-namespace Molotkoff.AssetManagment.Editor
+namespace Molotkoff.AssetManagment
 {
     public static class TypeUtil
     {
@@ -87,9 +87,6 @@ namespace Molotkoff.AssetManagment.Editor
             if (field == null)
                 throw new MissingFieldException($"No field in {obj} with name {fieldName}");
 
-            //var inspectedType = typeof(T);
-            //var fieldType = field.FieldType;
-
             return (T)field.GetValue(obj);
         }
 
@@ -133,6 +130,15 @@ namespace Molotkoff.AssetManagment.Editor
         public static T GetFieldValueInSerializibleProperty<T>(SerializedProperty property, string fieldName)
         {
             return GetFieldValueFromObject<T>(property.objectReferenceValue, fieldName);
+        }
+
+        public static Type GetFieldTypeFromSerializibleProperty(SerializedProperty property)
+        {
+            var targetType = property.serializedObject.targetObject.GetType();
+            var fieldInfo = targetType.GetField(property.name, BindingFlags.NonPublic |
+                                                               BindingFlags.Public |
+                                                               BindingFlags.Instance);
+            return fieldInfo.FieldType;
         }
     }
 }

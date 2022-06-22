@@ -4,16 +4,16 @@ using UnityEngine;
 using UnityEditor;
 using System.Text;
 using Molotkoff.AssetManagment;
-using Molotkoff.AssetManagment.Editor.Builders;
+using Molotkoff.AssetManagment.Builders;
 using System.Linq;
 using System;
 
-namespace Molotkoff.AssetManagment.Editor
+namespace Molotkoff.AssetManagment
 {
     [CustomEditor(typeof(AssetManagment))]
     public class AssetManagerEditor : UnityEditor.Editor
     {
-        private ContainersScheme[] _schemes;
+        private ContainersSchemeDefenition[] _schemes;
         private string[] _schemesNames;
         private int _selectedScheme;
 
@@ -22,7 +22,7 @@ namespace Molotkoff.AssetManagment.Editor
 
         private void OnEnable()
         {
-            _schemes = AssetUtil.FindAssets(typeof(ContainersScheme)).Select(asset => (ContainersScheme)asset).ToArray();
+            _schemes = AssetUtil.FindAssets(typeof(ContainersSchemeDefenition)).Select(asset => (ContainersSchemeDefenition)asset).ToArray();
             _schemesNames = _schemes.Select(scheme => scheme.name).ToArray();
             _selectedScheme = 0;
 
@@ -144,13 +144,12 @@ namespace Molotkoff.AssetManagment.Editor
         private void DisplaySchemesPopup()
         {
             var newSelected = EditorGUILayout.Popup(_selectedScheme, _schemesNames);
-
             if (newSelected != _selectedScheme)
             {
                 _selectedScheme = newSelected;
                 var scheme = _schemes[_selectedScheme];
-
-                TypeUtil.SetFieldValueFromObject(target, "_containerScheme", scheme);
+                serializedObject.FindProperty("_containersDefenition").objectReferenceValue = scheme;
+                serializedObject.ApplyModifiedProperties();
             }
         }
 

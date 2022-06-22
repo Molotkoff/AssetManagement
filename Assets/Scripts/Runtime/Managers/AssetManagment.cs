@@ -13,15 +13,11 @@ namespace Molotkoff.AssetManagment
     [CreateAssetMenu(menuName = "Molotkoff/AssetManagment/Manager")]
     public class AssetManagment : ScriptableSingleton<AssetManagment>
     {
-        [SerializeField] internal ContainersScheme _containerScheme;
+        [SerializeField] private ContainersSchemeDefenition _containersDefenition;
         [SerializeField] private BaseManager[] _assetsManagers;
         [SerializeField] private ScriptableObject[] _assets;
 
         private Dictionary<Type, BaseManager> _assetsManagersCache;
-
-#if !UNITY_ENGINE
-        private List<string> _containers = new List<string>();
-#endif
 
         public R Create<S, R>(S settings)
         {
@@ -48,6 +44,11 @@ namespace Molotkoff.AssetManagment
 #endif
             var assetManager = (FactoryManager<S, R>)manager;
             return assetManager.Create(settings);
+        }
+
+        public ContainersScheme Scheme()
+        {
+            return _containersDefenition.Scheme();
         }
 
         /*

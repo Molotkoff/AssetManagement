@@ -24,7 +24,7 @@ namespace Molotkoff.AssetManagment
                 {
                     _instance = new Containers()
                     {
-                        _scheme = AssetManagment.instance._containerScheme,
+                        _scheme = AssetManagment.instance.Scheme(),
                         _consistent = new Dictionary<string, Dictionary<Type, object>>(),
                         _self = new Dictionary<string, Dictionary<object, Dictionary<Type, object>>>()
                     };

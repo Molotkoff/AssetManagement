@@ -8,7 +8,7 @@ using UnityEditor;
 using System.Reflection;
 using Unity.Burst;
 
-namespace Molotkoff.AssetManagment.Editor.Builders
+namespace Molotkoff.AssetManagment.Builders
 {
     public static class AssetManagementBuilder
     {

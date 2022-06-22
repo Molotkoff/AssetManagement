@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEditor;
 
-namespace Molotkoff.AssetManagment.Editor
+namespace Molotkoff.AssetManagment
 {
     [CustomPropertyDrawer(typeof(Container<>), true)]
     public class ContainerPropertyDrawer : PropertyDrawer
@@ -27,7 +27,10 @@ namespace Molotkoff.AssetManagment.Editor
             EditorGUI.LabelField(containerNameRect, property.displayName);
 
             //popup container choose
-            var allContainers = TypeUtil.GetFieldValueFromObject<List<string>>(AssetManagment.instance, "_containers").ToArray();
+            var containersScheme = AssetManagment.instance.Scheme();
+
+            var containerType = TypeUtil.GetFieldTypeFromSerializibleProperty(property).GetGenericArguments()[0];
+            var allContainers = containersScheme.GetContainers(containerType);
 
             var myContainer = containerNameProperty.stringValue;
             var myContainerIndex = Array.IndexOf(allContainers, myContainer);

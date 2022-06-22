@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEditor;
 
-namespace Molotkoff.AssetManagment.Editor
+namespace Molotkoff.AssetManagment
 {
     public class ContainerEditorWindow : EditorWindow
     {

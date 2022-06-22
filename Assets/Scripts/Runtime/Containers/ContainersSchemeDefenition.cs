@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEngine;
 
 namespace Molotkoff.AssetManagment
 {
-    public interface IContainerPrepareProvider<S>
+    [Serializable]
+    public abstract class ContainersSchemeDefenition : ScriptableObject
     {
-        void Prepare(S settings);
+        public abstract ContainersScheme Scheme();
     }
 }

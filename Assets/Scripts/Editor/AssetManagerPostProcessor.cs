@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using UnityEditor;
 using UnityEngine;
 
-namespace Molotkoff.AssetManagment.Editor.Builders
+namespace Molotkoff.AssetManagment.Builders
 {
     internal class AssetManagerPostProcessor : AssetPostprocessor
     {

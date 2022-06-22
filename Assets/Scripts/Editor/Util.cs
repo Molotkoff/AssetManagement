@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEditor;
 
-namespace Molotkoff.AssetManagment.Editor
+namespace Molotkoff.AssetManagment
 {
     public static class Util
     {
